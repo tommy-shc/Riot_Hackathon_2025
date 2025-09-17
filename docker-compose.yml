@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"    # Map localhost:5000 -> container:5000
+    volumes:
+      - .:/app         # Mount local code (hot reload without rebuild)
+    command: python main.py
