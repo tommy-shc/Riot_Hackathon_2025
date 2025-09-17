@@ -26,4 +26,4 @@ class Summoner:
 summoner = Summoner("dump1ng0d", "lol")
 
 
-print(summoner.puuid)
+print(f"Summoner IGN: {summoner.gameName} summoner puuid: {summoner.puuid}")
