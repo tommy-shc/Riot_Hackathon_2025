@@ -8,17 +8,26 @@ load_dotenv()
 PINECONEAPI = os.getenv("PINECONEAPI")
 pc = Pinecone(PINECONEAPI)
 
+TEXT_FIELD = "chunk_text"
+BEDROCK_METADATA_FIELD = "bedrock_metadata"
+
 index_name = "quickstart-py"
-if not pc.has_index(index_name):
-    pc.create_index_for_model(
-        name=index_name,
-        cloud="aws",
-        region="us-east-1",
-        embed={
-            "model":"llama-text-embed-v2",
-            "field_map":{"text": "chunk_text"}
-        }
-    )
+
+# This creation of the index still gives power to pinecone choosing the embedding model
+
+# if not pc.has_index(index_name):
+#     pc.create_index_for_model(
+#         name=index_name,
+#         cloud="aws",
+#         region="us-east-1",
+#         embed={
+#             "model":"llama-text-embed-v2",
+#             "field_map":{
+#                 "text": TEXT_FIELD,
+#                 "metadata": BEDROCK_METADATA_FIELD
+#                 }
+#         }
+#     )
 
 # Upserting
 # records = [
@@ -73,6 +82,15 @@ if not pc.has_index(index_name):
 #     { "_id": "rec49", "chunk_text": "Airplanes fly due to the principles of lift and aerodynamics.", "category": "physics" },
 #     { "_id": "rec50", "chunk_text": "Renewable energy sources include wind, solar, and hydroelectric power.", "category": "energy" }
 # ]
+
+pc.create_index(
+    name=index_name,
+    dimensions=1024, # looked at the api for titan-embedding-v2
+    metric="cosine",
+    cloud="aws",
+    region="us-east-1",
+)
+
 
 # Obtaining the index... as an object?
 dense_index = pc.Index(index_name)
